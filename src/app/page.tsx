@@ -42,7 +42,7 @@ export default function Home() {
           <div className="flex-1">
             <h2 className="text-white font-semibold">模拟交易大厅</h2>
             <p className="text-sm text-gray-400">
-              10万虚拟资金 &middot; 10只热门标的 &middot; 实时行情模拟 &middot; 零风险练手
+              10万虚拟资金 &middot; 14只热门标的 &middot; 实时行情模拟 &middot; 零风险练手
             </p>
           </div>
           <span className="text-sm font-medium text-white px-4 py-1.5 rounded-full"

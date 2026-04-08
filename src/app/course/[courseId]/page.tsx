@@ -98,7 +98,9 @@ export default function CourseMapPage({ params }: { params: Promise<{ courseId: 
                             </span>
                           )}
                         </div>
-                        <p className="text-xs mt-0.5 truncate" style={{ color: "var(--color-text-secondary)" }}>{m.subtitle}</p>
+                        <p className="text-xs mt-0.5" style={{ color: "var(--color-text-secondary)" }}>
+                          {m.subtitle}
+                        </p>
                       </div>
                       <span className="flex-shrink-0 text-xs font-medium px-2 py-0.5 rounded-full"
                         style={{ background: done ? course.color + "20" : "var(--color-gray-100)", color: done ? course.color : "var(--color-text-muted)" }}>

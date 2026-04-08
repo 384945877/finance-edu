@@ -106,8 +106,8 @@ const intermediateParts: Part[] = [
     id: 1, title: "看懂数据", emoji: "📊",
     modules: [
       { id: 1, slug: "read-financial-report", title: "读懂财报", subtitle: "三张表的核心逻辑", emoji: "📑", part: 1 },
-      { id: 2, slug: "pe-pb-valuation", title: "PE/PB估值", subtitle: "判断贵还是便宜", emoji: "🏷️", part: 1 },
-      { id: 3, slug: "roe-analysis", title: "ROE分析", subtitle: "巴菲特最爱的指标", emoji: "🎯", part: 1 },
+      { id: 2, slug: "pe-pb-valuation", title: "PE/PB估值：股票贵不贵", subtitle: "用市盈率和市净率判断买入时机", emoji: "🏷️", part: 1 },
+      { id: 3, slug: "roe-analysis", title: "ROE：公司赚钱效率", subtitle: "巴菲特最爱的指标，一个数看透公司", emoji: "🎯", part: 1 },
       { id: 4, slug: "cash-flow", title: "现金流分析", subtitle: "利润可以造假，现金流不会", emoji: "💧", part: 1 },
       { id: 5, slug: "industry-comparison", title: "行业对比", subtitle: "不同行业怎么比", emoji: "🔍", part: 1 },
     ],
@@ -116,28 +116,28 @@ const intermediateParts: Part[] = [
     id: 2, title: "基金实战", emoji: "🎖️",
     modules: [
       { id: 6, slug: "fund-screening", title: "选基五维法", subtitle: "业绩/回撤/费率/经理/规模", emoji: "🔬", part: 2 },
-      { id: 7, slug: "morningstar-rating", title: "晨星评级", subtitle: "看懂基金的体检报告", emoji: "⭐", part: 2 },
+      { id: 7, slug: "morningstar-rating", title: "晨星评级：基金的体检报告", subtitle: "用专业评级快速筛选好基金", emoji: "⭐", part: 2 },
       { id: 8, slug: "dca-advanced", title: "定投进阶", subtitle: "智能定投与估值定投", emoji: "📈", part: 2 },
       { id: 9, slug: "take-profit", title: "止盈策略", subtitle: "会买是徒弟，会卖是师傅", emoji: "🎯", part: 2 },
-      { id: 10, slug: "fof-combo", title: "FOF与组合基金", subtitle: "基金中的基金", emoji: "📦", part: 2 },
+      { id: 10, slug: "fof-combo", title: "FOF：基金中的基金", subtitle: "一键买入一篮子基金的偷懒方案", emoji: "📦", part: 2 },
     ],
   },
   {
     id: 3, title: "股票实战", emoji: "📈",
     modules: [
       { id: 11, slug: "open-account", title: "开户实操", subtitle: "从注册到第一笔交易", emoji: "🏦", part: 3 },
-      { id: 12, slug: "technical-analysis", title: "K线与技术面", subtitle: "看懂图表的基础", emoji: "📉", part: 3 },
+      { id: 12, slug: "technical-analysis", title: "K线与技术面：看懂股票图表", subtitle: "红绿柱子到底在说什么", emoji: "📉", part: 3 },
       { id: 13, slug: "value-investing", title: "价值投资选股", subtitle: "找到被低估的好公司", emoji: "💎", part: 3 },
       { id: 14, slug: "growth-stock", title: "成长股逻辑", subtitle: "押注未来的赢家", emoji: "🚀", part: 3 },
-      { id: 15, slug: "etf-strategy", title: "ETF实战", subtitle: "场内基金的玩法", emoji: "🎲", part: 3 },
+      { id: 15, slug: "etf-strategy", title: "ETF实战：在股票账户买基金", subtitle: "像买股票一样买基金，费率更低", emoji: "🎲", part: 3 },
       { id: 16, slug: "hk-us-stock", title: "港美股入门", subtitle: "投资全球市场", emoji: "🌍", part: 3 },
     ],
   },
   {
     id: 4, title: "债券进阶", emoji: "📄",
     modules: [
-      { id: 17, slug: "convertible-bond", title: "可转债", subtitle: "下有保底上不封顶", emoji: "🔄", part: 4 },
-      { id: 18, slug: "reverse-repo", title: "国债逆回购", subtitle: "躺赚无风险收益", emoji: "💰", part: 4 },
+      { id: 17, slug: "convertible-bond", title: "可转债：下有保底上不封顶", subtitle: "能当债券也能变股票的神奇品种", emoji: "🔄", part: 4 },
+      { id: 18, slug: "reverse-repo", title: "国债逆回购：躺赚无风险收益", subtitle: "手上有闲钱时最简单的赚法", emoji: "💰", part: 4 },
       { id: 19, slug: "credit-bond", title: "信用债分析", subtitle: "怎么判断会不会违约", emoji: "🔍", part: 4 },
       { id: 20, slug: "bond-fund-strategy", title: "债基策略", subtitle: "纯债/混合/增强怎么选", emoji: "📋", part: 4 },
     ],
@@ -145,7 +145,7 @@ const intermediateParts: Part[] = [
   {
     id: 5, title: "另类投资", emoji: "🎰",
     modules: [
-      { id: 21, slug: "reits-practice", title: "REITs实操", subtitle: "小钱投资大房产", emoji: "🏢", part: 5 },
+      { id: 21, slug: "reits-practice", title: "REITs：小钱投资大房产", subtitle: "几百块也能当包租公的方法", emoji: "🏢", part: 5 },
       { id: 22, slug: "commodity-futures", title: "商品期货科普", subtitle: "原油黄金怎么玩", emoji: "🛢️", part: 5 },
       { id: 23, slug: "options-intro", title: "期权入门", subtitle: "给你的股票买保险", emoji: "🎯", part: 5 },
       { id: 24, slug: "crypto-cold", title: "数字资产冷知识", subtitle: "比特币的真相", emoji: "₿", part: 5 },
@@ -206,7 +206,7 @@ const advancedParts: Part[] = [
   {
     id: 5, title: "海外视野", emoji: "🌏",
     modules: [
-      { id: 18, slug: "qdii-fund", title: "QDII基金", subtitle: "在国内投全球", emoji: "🌐", part: 5 },
+      { id: 18, slug: "qdii-fund", title: "QDII基金：在国内投全球", subtitle: "不出国门也能买海外资产", emoji: "🌐", part: 5 },
       { id: 19, slug: "hk-us-deep", title: "港美股深度", subtitle: "美股打新/港股通", emoji: "🇺🇸", part: 5 },
       { id: 20, slug: "global-allocation", title: "全球资产配置", subtitle: "不把鸡蛋放一个国家", emoji: "🌍", part: 5 },
       { id: 21, slug: "fx-risk", title: "汇率风险管理", subtitle: "换汇时机与对冲", emoji: "💱", part: 5 },

@@ -112,6 +112,63 @@ export default function ModuleShell({ courseId, module, children }: ModuleShellP
               </Link>
             )}
           </div>
+
+          {/* 课程结业引导 */}
+          {!next && (
+            <div className="w-full mt-6 rounded-2xl overflow-hidden"
+              style={{ border: "1px solid var(--border-medium)" }}>
+              <div className="px-5 py-4 text-center"
+                style={{ background: `linear-gradient(135deg, ${color}12 0%, ${color}05 100%)` }}>
+                <p className="text-lg font-bold mb-1">
+                  {courseId === "beginner" ? "小白课程全部通关" : courseId === "intermediate" ? "进阶课程全部通关" : "恭喜通关"}
+                </p>
+                <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                  {courseId === "beginner"
+                    ? "你已经掌握了理财的基本功，接下来可以进入实战阶段了"
+                    : courseId === "intermediate"
+                    ? "你已经具备实战能力，可以挑战更高阶的财务规划了"
+                    : "所有内容已学完，继续保持学习的习惯"}
+                </p>
+              </div>
+              <div className="px-5 py-4 flex flex-col sm:flex-row gap-3">
+                {courseId === "beginner" && (
+                  <>
+                    <Link href="/course/intermediate"
+                      className="flex-1 text-center text-sm font-semibold py-3 rounded-xl text-white transition-colors"
+                      style={{ background: "#f97316" }}>
+                      进入进阶实战课程 &rarr;
+                    </Link>
+                    <Link href="/trade"
+                      className="flex-1 text-center text-sm font-medium py-3 rounded-xl transition-colors"
+                      style={{ background: "var(--color-gray-100)", color: "var(--color-text-secondary)" }}>
+                      先去模拟交易练练手
+                    </Link>
+                  </>
+                )}
+                {courseId === "intermediate" && (
+                  <>
+                    <Link href="/course/advanced"
+                      className="flex-1 text-center text-sm font-semibold py-3 rounded-xl text-white transition-colors"
+                      style={{ background: "#8b5cf6" }}>
+                      进入高阶规划课程 &rarr;
+                    </Link>
+                    <Link href="/trade"
+                      className="flex-1 text-center text-sm font-medium py-3 rounded-xl transition-colors"
+                      style={{ background: "var(--color-gray-100)", color: "var(--color-text-secondary)" }}>
+                      去交易大厅实操
+                    </Link>
+                  </>
+                )}
+                {courseId === "advanced" && (
+                  <Link href="/"
+                    className="flex-1 text-center text-sm font-medium py-3 rounded-xl transition-colors"
+                    style={{ background: "var(--color-gray-100)", color: "var(--color-text-secondary)" }}>
+                    回到首页
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
