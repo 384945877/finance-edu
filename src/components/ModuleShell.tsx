@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useProgress } from "@/lib/progress-store";
 import { getNextModule, getPrevModule, getPartById, getTotalModules, getCourse, type Module } from "@/lib/course-data";
+import { getMissionBySlug } from "@/lib/trade-missions";
+import TradeMissionBanner from "@/components/trade/TradeMissionBanner";
 
 interface ModuleShellProps {
   courseId: string;
@@ -20,6 +22,9 @@ export default function ModuleShell({ courseId, module, children }: ModuleShellP
   const progress = getProgress(courseId);
   const total = getTotalModules(courseId);
   const color = course?.color || "var(--color-brand)";
+
+  // 进阶课程模块关联的实战任务
+  const mission = courseId === "intermediate" ? getMissionBySlug(module.slug) : undefined;
 
   return (
     <>
@@ -68,6 +73,9 @@ export default function ModuleShell({ courseId, module, children }: ModuleShellP
       <section className="section-padding">
         <div className="mx-auto max-w-[800px] prose-content">
           {children}
+
+          {/* 进阶课程实战任务入口 */}
+          {mission && <TradeMissionBanner mission={mission} />}
         </div>
       </section>
 
@@ -79,12 +87,12 @@ export default function ModuleShell({ courseId, module, children }: ModuleShellP
               onClick={() => completeModule(courseId, module.id)}
               className="btn-brand text-base px-8 py-3"
             >
-              完成本关 &check;
+              完成本关
             </button>
           )}
           {completed && (
             <p className="text-sm font-medium" style={{ color }}>
-              &check; 已完成
+              已完成
             </p>
           )}
           <div className="flex items-center gap-4 w-full justify-between mt-2">

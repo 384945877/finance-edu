@@ -4,6 +4,8 @@ import { use } from "react";
 import Link from "next/link";
 import { getCourse, getTotalModules } from "@/lib/course-data";
 import { useProgress } from "@/lib/progress-store";
+import { getMissionBySlug } from "@/lib/trade-missions";
+import { useTrade } from "@/lib/trade-store";
 import { notFound } from "next/navigation";
 
 export default function CourseMapPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -12,6 +14,7 @@ export default function CourseMapPage({ params }: { params: Promise<{ courseId: 
   if (!course) return notFound();
 
   const { isCompleted, isUnlocked, getProgress } = useProgress();
+  const { isMissionCompleted } = useTrade();
   const progress = getProgress(courseId);
   const total = getTotalModules(courseId);
   const firstSlug = course.parts[0]?.modules[0]?.slug;
@@ -73,6 +76,8 @@ export default function CourseMapPage({ params }: { params: Promise<{ courseId: 
                 {part.modules.map((m) => {
                   const done = isCompleted(courseId, m.id);
                   const unlocked = isUnlocked(courseId, m.id);
+                  const mission = courseId === "intermediate" ? getMissionBySlug(m.slug) : undefined;
+                  const mDone = mission ? isMissionCompleted(mission.id) : false;
                   return (
                     <Link key={m.id}
                       href={unlocked ? `/course/${courseId}/${m.slug}` : "#"}
@@ -81,7 +86,18 @@ export default function CourseMapPage({ params }: { params: Promise<{ courseId: 
                     >
                       <span className="text-2xl w-10 text-center flex-shrink-0">{m.emoji}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold group-hover:underline truncate">{m.title}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold group-hover:underline truncate">{m.title}</p>
+                          {mission && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md flex-shrink-0"
+                              style={{
+                                background: mDone ? "#065f4620" : "#f9731620",
+                                color: mDone ? "#065f46" : "#f97316",
+                              }}>
+                              {mDone ? "实战 ✓" : "实战"}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs mt-0.5 truncate" style={{ color: "var(--color-text-secondary)" }}>{m.subtitle}</p>
                       </div>
                       <span className="flex-shrink-0 text-xs font-medium px-2 py-0.5 rounded-full"

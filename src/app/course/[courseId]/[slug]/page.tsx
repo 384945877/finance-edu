@@ -60,8 +60,51 @@ const beginnerModules: Record<string, React.ComponentType> = {
   "rent-vs-buy": Module34, "retirement": Module35,
 };
 
+/* ===== Intermediate modules (Lv.2) ===== */
+import IntMod1 from "@/modules/intermediate/read-financial-report";
+import IntMod2 from "@/modules/intermediate/pe-pb-valuation";
+import IntMod3 from "@/modules/intermediate/roe-analysis";
+import IntMod4 from "@/modules/intermediate/cash-flow";
+import IntMod5 from "@/modules/intermediate/industry-comparison";
+import IntMod6 from "@/modules/intermediate/fund-screening";
+import IntMod7 from "@/modules/intermediate/morningstar-rating";
+import IntMod8 from "@/modules/intermediate/dca-advanced";
+import IntMod9 from "@/modules/intermediate/take-profit";
+import IntMod10 from "@/modules/intermediate/fof-combo";
+import IntMod11 from "@/modules/intermediate/open-account";
+import IntMod12 from "@/modules/intermediate/technical-analysis";
+import IntMod13 from "@/modules/intermediate/value-investing";
+import IntMod14 from "@/modules/intermediate/growth-stock";
+import IntMod15 from "@/modules/intermediate/etf-strategy";
+import IntMod16 from "@/modules/intermediate/hk-us-stock";
+import IntMod17 from "@/modules/intermediate/convertible-bond";
+import IntMod18 from "@/modules/intermediate/reverse-repo";
+import IntMod19 from "@/modules/intermediate/credit-bond";
+import IntMod20 from "@/modules/intermediate/bond-fund-strategy";
+import IntMod21 from "@/modules/intermediate/reits-practice";
+import IntMod22 from "@/modules/intermediate/commodity-futures";
+import IntMod23 from "@/modules/intermediate/options-intro";
+import IntMod24 from "@/modules/intermediate/crypto-cold";
+import IntMod25 from "@/modules/intermediate/build-portfolio";
+import IntMod26 from "@/modules/intermediate/backtest-review";
+import IntMod27 from "@/modules/intermediate/tax-optimization";
+import IntMod28 from "@/modules/intermediate/broker-selection";
+import IntMod29 from "@/modules/intermediate/investment-toolbox";
+import IntMod30 from "@/modules/intermediate/annual-checkup";
+
 /* Intermediate & Advanced modules will be added as they are created */
-const intermediateModules: Record<string, React.ComponentType> = {};
+const intermediateModules: Record<string, React.ComponentType> = {
+  "read-financial-report": IntMod1, "pe-pb-valuation": IntMod2, "roe-analysis": IntMod3,
+  "cash-flow": IntMod4, "industry-comparison": IntMod5, "fund-screening": IntMod6,
+  "morningstar-rating": IntMod7, "dca-advanced": IntMod8, "take-profit": IntMod9,
+  "fof-combo": IntMod10, "open-account": IntMod11, "technical-analysis": IntMod12,
+  "value-investing": IntMod13, "growth-stock": IntMod14, "etf-strategy": IntMod15,
+  "hk-us-stock": IntMod16, "convertible-bond": IntMod17, "reverse-repo": IntMod18,
+  "credit-bond": IntMod19, "bond-fund-strategy": IntMod20, "reits-practice": IntMod21,
+  "commodity-futures": IntMod22, "options-intro": IntMod23, "crypto-cold": IntMod24,
+  "build-portfolio": IntMod25, "backtest-review": IntMod26, "tax-optimization": IntMod27,
+  "broker-selection": IntMod28, "investment-toolbox": IntMod29, "annual-checkup": IntMod30,
+};
 const advancedModules: Record<string, React.ComponentType> = {};
 
 const courseModules: Record<string, Record<string, React.ComponentType>> = {

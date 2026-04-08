@@ -29,6 +29,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trade CTA */}
+      <section className="px-6 -mt-4">
+        <Link href="/trade"
+          className="mx-auto max-w-[900px] flex items-center gap-4 rounded-2xl p-5 transition-all hover:scale-[1.01] hover:shadow-lg"
+          style={{
+            background: "linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <span className="text-3xl">📊</span>
+          <div className="flex-1">
+            <h2 className="text-white font-semibold">模拟交易大厅</h2>
+            <p className="text-sm text-gray-400">
+              10万虚拟资金 &middot; 10只热门标的 &middot; 实时行情模拟 &middot; 零风险练手
+            </p>
+          </div>
+          <span className="text-sm font-medium text-white px-4 py-1.5 rounded-full"
+            style={{ background: "var(--color-brand)", color: "#0d0d0d" }}>
+            进入交易 &rarr;
+          </span>
+        </Link>
+      </section>
+
       {/* Course Cards */}
       <section className="section-padding">
         <div className="mx-auto max-w-[900px] grid gap-6 md:grid-cols-3">

@@ -17,7 +17,7 @@ export default function Navbar() {
           理财学院
         </Link>
 
-        {/* Right: course links */}
+        {/* Right: course links + trade */}
         <div className="flex items-center gap-3">
           <Link href="/course/beginner" className="text-xs font-medium px-2 py-1 rounded-lg transition-colors hover:bg-[var(--border-subtle)]"
             style={{ color: "#18E299" }}>
@@ -30,6 +30,11 @@ export default function Navbar() {
           <Link href="/course/advanced" className="text-xs font-medium px-2 py-1 rounded-lg transition-colors hover:bg-[var(--border-subtle)]"
             style={{ color: "#8b5cf6" }}>
             高阶
+          </Link>
+          <div className="w-px h-4" style={{ background: "var(--border-medium)" }} />
+          <Link href="/trade" className="text-xs font-semibold px-3 py-1 rounded-lg transition-colors"
+            style={{ background: "var(--color-brand)", color: "#0d0d0d" }}>
+            模拟交易
           </Link>
         </div>
       </nav>
