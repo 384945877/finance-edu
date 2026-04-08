@@ -134,116 +134,126 @@ function TradeContent() {
   const pnlPercent = trade.initialCash === 0 ? 0 : Math.round((totalPnL / trade.initialCash) * 10000) / 100;
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--color-bg)" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--color-bg)" }}>
       {/* Header */}
-      <div className="border-b px-4 py-3" style={{ borderColor: "var(--border-subtle)" }}>
+      <div className="border-b px-4 py-2.5 shrink-0" style={{ borderColor: "var(--border-subtle)" }}>
         <div className="mx-auto max-w-[1400px] flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold">模拟交易</h1>
-            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+            <h1 className="text-base font-semibold">模拟交易</h1>
+            <p className="text-[11px]" style={{ color: "var(--color-text-muted)" }}>
               虚拟资金，真实体验
             </p>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             <div className="text-right">
-              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>总资产</p>
-              <p className="text-lg font-bold tabular-nums">&yen;{totalAssets.toLocaleString()}</p>
+              <p className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>总资产</p>
+              <p className="text-sm font-bold tabular-nums">&yen;{totalAssets.toLocaleString()}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>总盈亏</p>
-              <p className={`text-lg font-bold tabular-nums ${totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
+              <p className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>盈亏</p>
+              <p className={`text-sm font-bold tabular-nums ${totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
                 {totalPnL >= 0 ? "+" : ""}{totalPnL.toLocaleString()}
-                <span className="text-xs ml-1 font-medium">({pnlPercent}%)</span>
+                <span className="text-[10px] ml-0.5">({pnlPercent}%)</span>
               </p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>可用</p>
+              <p className="text-sm font-bold tabular-nums">&yen;{trade.cash.toLocaleString()}</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Left(Chart+Trade) + Right(StockList+Portfolio) */}
-      <div className="mx-auto max-w-[1400px] px-4 py-4">
-        <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
-          {/* Left: Mission + Chart + Trade */}
-          <div className="space-y-4">
-            {mission && (
-              <MissionGuidePanel mission={mission} done={missionDone || trade.isMissionCompleted(mission.id)} />
-            )}
+      {/* 三栏主体 */}
+      <div className="flex-1 mx-auto w-full max-w-[1400px] flex" style={{ minHeight: 0 }}>
+        {/* 左栏：自选行情 */}
+        <div className="hidden lg:block shrink-0 border-r py-3 px-2" style={{ width: 210, borderColor: "var(--border-subtle)" }}>
+          <MarketTicker ticks={ticks} selected={selected} onSelect={setSelected} />
+        </div>
 
-            {/* Chart + Stock Traits */}
-            <div className="card-base">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h2 className="font-semibold">{selected.name}</h2>
-                  <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-                    {selected.symbol} &middot; {selected.category}
+        {/* 中栏：图表 + 交易面板 */}
+        <div className="flex-1 min-w-0 overflow-y-auto py-4 px-4">
+          {/* 任务引导 */}
+          {mission && (
+            <div className="mb-4">
+              <MissionGuidePanel mission={mission} done={missionDone || trade.isMissionCompleted(mission.id)} />
+            </div>
+          )}
+
+          {/* 标的信息 + 图表 */}
+          <div className="card-base mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-semibold">{selected.name}</h2>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--color-gray-100)", color: "var(--color-text-muted)" }}>
+                    {selected.category}
                   </span>
                 </div>
-                {ticks[selected.symbol] && (
-                  <div className="text-right">
-                    <p className="text-2xl font-bold tabular-nums">
-                      &yen;{ticks[selected.symbol].price.toLocaleString()}
-                    </p>
-                    <p className={`text-sm font-medium ${ticks[selected.symbol].changePercent >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {ticks[selected.symbol].changePercent >= 0 ? "+" : ""}
-                      {ticks[selected.symbol].changePercent}%
-                    </p>
-                  </div>
-                )}
+                <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>{selected.symbol}</span>
               </div>
-              <MiniChart
-                data={priceHistory[selected.symbol] || []}
-                color={ticks[selected.symbol]?.changePercent >= 0 ? "#22c55e" : "#ef4444"}
-                height={200}
-              />
-              {/* Stock Traits */}
-              <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border-subtle)" }}>
-                <div className="flex flex-wrap gap-2 items-center">
-                  {selected.traits.style && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: "var(--color-gray-100)", color: "var(--color-text-secondary)" }}>
-                      {selected.traits.style}
-                    </span>
-                  )}
-                  {selected.traits.roe && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                      style={{ background: "#22c55e15", color: "#22c55e" }}>
-                      ROE {selected.traits.roe}
-                    </span>
-                  )}
-                  {selected.traits.pe && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                      style={{ background: "#3b82f615", color: "#3b82f6" }}>
-                      PE {selected.traits.pe}
-                    </span>
-                  )}
-                  {selected.traits.risk && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                      style={{ background: selected.traits.risk === "极高" || selected.traits.risk === "高" ? "#ef444415" : "#f9731615", color: selected.traits.risk === "极高" || selected.traits.risk === "高" ? "#ef4444" : "#f97316" }}>
-                      风险{selected.traits.risk}
-                    </span>
-                  )}
-                </div>
-                {selected.traits.tip && (
-                  <p className="text-xs mt-2 leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                    {selected.traits.tip}
+              {ticks[selected.symbol] && (
+                <div className="text-right">
+                  <p className="text-2xl font-bold tabular-nums">
+                    {ticks[selected.symbol].price.toLocaleString()}
                   </p>
-                )}
-              </div>
+                  <p className={`text-sm font-medium ${ticks[selected.symbol].changePercent >= 0 ? "text-green-500" : "text-red-500"}`}>
+                    {ticks[selected.symbol].changePercent >= 0 ? "+" : ""}
+                    {ticks[selected.symbol].changePercent}%
+                  </p>
+                </div>
+              )}
             </div>
-
-            <TradePanel stock={selected} tick={ticks[selected.symbol]} mission={mission} missionDone={missionDone} />
+            <MiniChart
+              data={priceHistory[selected.symbol] || []}
+              color={ticks[selected.symbol]?.changePercent >= 0 ? "#22c55e" : "#ef4444"}
+              height={180}
+            />
+            {/* 投资特征 */}
+            <div className="mt-2 pt-2 border-t flex flex-wrap items-center gap-1.5" style={{ borderColor: "var(--border-subtle)" }}>
+              {selected.traits.style && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                  style={{ background: "var(--color-gray-100)", color: "var(--color-text-secondary)" }}>
+                  {selected.traits.style}
+                </span>
+              )}
+              {selected.traits.roe && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#22c55e15", color: "#22c55e" }}>
+                  ROE {selected.traits.roe}
+                </span>
+              )}
+              {selected.traits.pe && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "#3b82f615", color: "#3b82f6" }}>
+                  PE {selected.traits.pe}
+                </span>
+              )}
+              {selected.traits.risk && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded"
+                  style={{ background: selected.traits.risk === "极高" || selected.traits.risk === "高" ? "#ef444415" : "#f9731615", color: selected.traits.risk === "极高" || selected.traits.risk === "高" ? "#ef4444" : "#f97316" }}>
+                  {selected.traits.risk}风险
+                </span>
+              )}
+              {selected.traits.tip && (
+                <span className="text-[10px] ml-1" style={{ color: "var(--color-text-muted)" }}>
+                  {selected.traits.tip}
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* Right Sidebar: Stock List + Portfolio */}
-          <div className="space-y-4">
-            {/* Stock List */}
-            <div className="card-base">
-              <h3 className="text-sm font-semibold mb-3">自选行情</h3>
-              <MarketTicker ticks={ticks} selected={selected} onSelect={setSelected} />
-            </div>
+          {/* 交易面板 */}
+          <TradePanel stock={selected} tick={ticks[selected.symbol]} mission={mission} missionDone={missionDone} />
 
-            <PortfolioPanel ticks={ticks} />
+          {/* 移动端：自选行情（lg以下显示） */}
+          <div className="lg:hidden mt-4 card-base">
+            <h3 className="text-sm font-semibold mb-2">自选行情</h3>
+            <MarketTicker ticks={ticks} selected={selected} onSelect={setSelected} />
           </div>
+        </div>
+
+        {/* 右栏：持仓 */}
+        <div className="hidden lg:block shrink-0 border-l overflow-y-auto py-4 px-3" style={{ width: 280, borderColor: "var(--border-subtle)" }}>
+          <PortfolioPanel ticks={ticks} />
         </div>
       </div>
     </div>
