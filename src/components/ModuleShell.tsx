@@ -5,6 +5,7 @@ import { useProgress } from "@/lib/progress-store";
 import { getNextModule, getPrevModule, getPartById, getTotalModules, getCourse, type Module } from "@/lib/course-data";
 import { getMissionBySlug } from "@/lib/trade-missions";
 import TradeMissionBanner from "@/components/trade/TradeMissionBanner";
+import AiTutor from "@/components/AiTutor";
 
 interface ModuleShellProps {
   courseId: string;
@@ -113,6 +114,9 @@ export default function ModuleShell({ courseId, module, children }: ModuleShellP
           </div>
         </div>
       </section>
+
+      {/* AI 助教 */}
+      <AiTutor slug={module.slug} moduleTitle={module.title} />
     </>
   );
 }
