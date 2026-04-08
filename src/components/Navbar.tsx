@@ -1,13 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useProgress } from "@/lib/progress-store";
-import { TOTAL_MODULES } from "@/lib/course-data";
 
 export default function Navbar() {
-  const { getProgress, completed } = useProgress();
-  const progress = getProgress();
-
   return (
     <header className="sticky top-0 z-50 bg-[var(--color-bg)]/80 backdrop-blur-md border-b"
       style={{ borderColor: "var(--border-subtle)" }}>
@@ -19,29 +14,22 @@ export default function Navbar() {
             style={{ background: "var(--color-brand)", color: "#0d0d0d" }}>
             ¥
           </span>
-          理财冒险
+          理财学院
         </Link>
 
-        {/* Center: progress */}
-        <div className="hidden sm:flex items-center gap-2">
-          <div className="w-32 h-1.5 rounded-full overflow-hidden"
-            style={{ background: "var(--border-subtle)" }}>
-            <div className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${progress}%`, background: "var(--color-brand)" }} />
-          </div>
-          <span className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>
-            {completed.length}/{TOTAL_MODULES}
-          </span>
-        </div>
-
-        {/* Right: CTA */}
+        {/* Right: course links */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-sm font-medium px-3 py-1.5 rounded-lg transition-colors"
-            style={{ color: "var(--color-text)" }}>
-            地图
+          <Link href="/course/beginner" className="text-xs font-medium px-2 py-1 rounded-lg transition-colors hover:bg-[var(--border-subtle)]"
+            style={{ color: "#18E299" }}>
+            小白
           </Link>
-          <Link href="/learn/what-is-money" className="btn-primary text-xs px-4 py-2">
-            {progress === 0 ? "开始" : "继续"}
+          <Link href="/course/intermediate" className="text-xs font-medium px-2 py-1 rounded-lg transition-colors hover:bg-[var(--border-subtle)]"
+            style={{ color: "#f97316" }}>
+            进阶
+          </Link>
+          <Link href="/course/advanced" className="text-xs font-medium px-2 py-1 rounded-lg transition-colors hover:bg-[var(--border-subtle)]"
+            style={{ color: "#8b5cf6" }}>
+            高阶
           </Link>
         </div>
       </nav>
