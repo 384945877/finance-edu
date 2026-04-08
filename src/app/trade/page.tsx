@@ -11,6 +11,8 @@ import TradePanel from "@/components/trade/TradePanel";
 import PortfolioPanel from "@/components/trade/PortfolioPanel";
 import MiniChart from "@/components/trade/MiniChart";
 import MissionGuidePanel from "@/components/trade/MissionGuidePanel";
+import StrategySignalBar from "@/components/trade/StrategySignalBar";
+import { type StrategyId } from "@/lib/quant-strategies";
 
 export default function TradePage() {
   return (
@@ -24,11 +26,13 @@ function TradeContent() {
   const searchParams = useSearchParams();
   const missionId = searchParams.get("mission");
   const mission: TradeMission | undefined = missionId ? getMissionById(missionId) : undefined;
+  const strategyParam = searchParams.get("strategy") as StrategyId | null;
 
   const [ticks, setTicks] = useState<Record<string, Tick>>({});
   const [selected, setSelected] = useState<Stock>(STOCKS[0]);
   const [priceHistory, setPriceHistory] = useState<Record<string, number[]>>({});
   const [missionDone, setMissionDone] = useState(false);
+  const [activeStrategy, setActiveStrategy] = useState<StrategyId | null>(strategyParam);
   const tickRef = useRef(ticks);
   tickRef.current = ticks;
 
@@ -244,6 +248,15 @@ function TradeContent() {
               )}
             </div>
           </div>
+
+          {/* 策略信号栏 */}
+          <StrategySignalBar
+            activeStrategyId={activeStrategy}
+            onChangeStrategy={setActiveStrategy}
+            selectedSymbol={selected.symbol}
+            priceHistory={priceHistory[selected.symbol] || []}
+            cash={trade.cash}
+          />
 
           {/* 交易面板 */}
           <TradePanel stock={selected} tick={ticks[selected.symbol]} mission={mission} missionDone={missionDone} />

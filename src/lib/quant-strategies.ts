@@ -280,3 +280,112 @@ export function getStrategyStocks(strategy: Strategy): Stock[] {
     .map(sym => STOCKS.find(s => s.symbol === sym))
     .filter((s): s is Stock => !!s);
 }
+
+// ===== 实时信号引擎 =====
+
+export type SignalAction = "buy" | "sell" | "hold";
+
+export interface LiveSignal {
+  action: SignalAction;
+  reason: string;
+  confidence: number; // 0-100
+  strategyName: string;
+  suggestedAmount?: number;
+}
+
+/**
+ * 基于最近价格历史生成实时信号
+ * priceHistory: 最近N根价格（至少20根）
+ */
+export function generateLiveSignal(
+  strategyId: StrategyId,
+  symbol: string,
+  priceHistory: number[],
+  cash: number,
+): LiveSignal | null {
+  const strategy = STRATEGIES.find(s => s.id === strategyId);
+  if (!strategy) return null;
+  if (!strategy.symbols.includes(symbol) && strategy.symbols.length > 0) return null;
+  if (priceHistory.length < 5) return null;
+
+  const stock = STOCKS.find(s => s.symbol === symbol);
+  if (!stock) return null;
+
+  const prices = priceHistory;
+  const price = prices[prices.length - 1];
+  const len = prices.length;
+
+  switch (strategyId) {
+    case "dca": {
+      const period = strategy.params.find(p => p.key === "period")!.value;
+      // 定投：简单按周期判断
+      return {
+        action: "buy",
+        reason: `定投策略建议每${period}个周期定额买入`,
+        confidence: 85,
+        strategyName: strategy.name,
+        suggestedAmount: strategy.params.find(p => p.key === "amount")!.value,
+      };
+    }
+    case "value-pe": {
+      const buyPE = strategy.params.find(p => p.key === "buyPE")!.value;
+      const sellPE = strategy.params.find(p => p.key === "sellPE")!.value;
+      const simulatedPE = (price / stock.basePrice) * 15;
+      if (simulatedPE < buyPE) {
+        return { action: "buy", reason: `当前模拟PE=${simulatedPE.toFixed(1)}，低于${buyPE}阈值，估值偏低`, confidence: 75, strategyName: strategy.name };
+      } else if (simulatedPE > sellPE) {
+        return { action: "sell", reason: `当前模拟PE=${simulatedPE.toFixed(1)}，高于${sellPE}阈值，估值偏高`, confidence: 70, strategyName: strategy.name };
+      }
+      return { action: "hold", reason: `当前模拟PE=${simulatedPE.toFixed(1)}，处于合理区间`, confidence: 60, strategyName: strategy.name };
+    }
+    case "momentum": {
+      const lb = Math.min(strategy.params.find(p => p.key === "lookback")!.value, len - 1);
+      if (lb < 3) return null;
+      const recent = prices.slice(-lb);
+      const highN = Math.max(...recent);
+      const lowN = Math.min(...recent);
+      if (price >= highN) {
+        return { action: "buy", reason: `价格突破${lb}期最高点，动量向上`, confidence: 65, strategyName: strategy.name };
+      } else if (price <= lowN) {
+        return { action: "sell", reason: `价格跌破${lb}期最低点，动量向下`, confidence: 65, strategyName: strategy.name };
+      }
+      const pct = ((price - lowN) / (highN - lowN) * 100).toFixed(0);
+      return { action: "hold", reason: `价格处于${lb}期区间${pct}%位置`, confidence: 50, strategyName: strategy.name };
+    }
+    case "mean-revert": {
+      const maPeriod = Math.min(strategy.params.find(p => p.key === "maPeriod")!.value, len);
+      const dev = strategy.params.find(p => p.key === "deviation")!.value / 100;
+      if (maPeriod < 3) return null;
+      const ma = prices.slice(-maPeriod).reduce((a, b) => a + b, 0) / maPeriod;
+      if (price < ma * (1 - dev)) {
+        return { action: "buy", reason: `价格低于MA${maPeriod}的${(dev*100).toFixed(0)}%，偏离均值，预期回归`, confidence: 70, strategyName: strategy.name };
+      } else if (price > ma * (1 + dev)) {
+        return { action: "sell", reason: `价格高于MA${maPeriod}的${(dev*100).toFixed(0)}%，偏离均值，预期回落`, confidence: 70, strategyName: strategy.name };
+      }
+      return { action: "hold", reason: `价格在MA${maPeriod}附近，无偏离信号`, confidence: 55, strategyName: strategy.name };
+    }
+    case "golden-cross": {
+      const s = Math.min(strategy.params.find(p => p.key === "shortMA")!.value, len);
+      const l = Math.min(strategy.params.find(p => p.key === "longMA")!.value, len);
+      if (l < 3 || s < 2) return null;
+      const shortNow = prices.slice(-s).reduce((a, b) => a + b, 0) / s;
+      const longNow = prices.slice(-l).reduce((a, b) => a + b, 0) / l;
+      const shortPrev = prices.slice(-s - 1, -1).reduce((a, b) => a + b, 0) / s;
+      const longPrev = prices.slice(-l - 1, -1).reduce((a, b) => a + b, 0) / l;
+      if (shortNow > longNow && shortPrev <= longPrev) {
+        return { action: "buy", reason: `MA${s}上穿MA${l}，金叉信号`, confidence: 72, strategyName: strategy.name };
+      } else if (shortNow < longNow && shortPrev >= longPrev) {
+        return { action: "sell", reason: `MA${s}下穿MA${l}，死叉信号`, confidence: 72, strategyName: strategy.name };
+      }
+      return {
+        action: "hold",
+        reason: shortNow > longNow ? `MA${s}在MA${l}上方，趋势向上` : `MA${s}在MA${l}下方，趋势向下`,
+        confidence: 50,
+        strategyName: strategy.name,
+      };
+    }
+    case "risk-parity": {
+      return { action: "hold", reason: "风险平价策略需多标的组合，请在策略页查看详情", confidence: 40, strategyName: strategy.name };
+    }
+  }
+}

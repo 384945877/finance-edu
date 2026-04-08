@@ -175,10 +175,10 @@ export default function StrategiesPage() {
 
                 {/* 操作按钮 */}
                 <div className="flex items-center gap-3 mt-4">
-                  <Link href={`/trade`}
+                  <Link href={`/trade?strategy=${activeStrategy.id}`}
                     className="flex-1 text-center text-sm font-medium py-2.5 rounded-xl text-white transition-colors"
                     style={{ background: "var(--color-brand)" }}>
-                    去交易大厅实操
+                    用此策略交易
                   </Link>
                   {activeStrategy.relatedModule && (
                     <Link href={`/course/intermediate/${activeStrategy.relatedModule}`}
