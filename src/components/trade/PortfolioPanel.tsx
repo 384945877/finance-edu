@@ -79,7 +79,6 @@ export default function PortfolioPanel({ ticks }: Props) {
                   style={{ background: "var(--color-gray-50)" }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm">{stock?.emoji}</span>
                       <div>
                         <p className="text-sm font-semibold">{stock?.name || pos.symbol}</p>
                         <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>

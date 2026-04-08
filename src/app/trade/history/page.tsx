@@ -76,7 +76,6 @@ export default function TradeHistoryPage() {
                     </span>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-sm">{stock?.emoji}</span>
                         <span className="text-sm font-semibold">{stock?.name || record.symbol}</span>
                       </div>
                       <p className="text-xs mt-0.5" style={{ color: "var(--color-text-muted)" }}>

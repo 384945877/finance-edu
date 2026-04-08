@@ -21,7 +21,6 @@ export default function TradeMissionBanner({ mission }: Props) {
           border: "1px solid rgba(24,226,153,0.3)",
         }}>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl">{mission.emoji}</span>
           <span className="text-white font-semibold text-sm">{mission.title}</span>
           <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 font-medium">
             已完成 +{mission.xp}XP

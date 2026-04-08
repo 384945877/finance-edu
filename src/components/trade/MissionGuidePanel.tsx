@@ -20,7 +20,6 @@ export default function MissionGuidePanel({ mission, done }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-center gap-2">
-          <span className="text-xl">{mission.emoji}</span>
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold px-1.5 py-0.5 rounded-md"

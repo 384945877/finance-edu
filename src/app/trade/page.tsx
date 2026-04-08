@@ -139,7 +139,6 @@ function TradeContent() {
       <div className="border-b px-4 py-3" style={{ borderColor: "var(--border-subtle)" }}>
         <div className="mx-auto max-w-[1400px] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">📊</span>
             <div>
               <h1 className="text-lg font-semibold">模拟交易大厅</h1>
               <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
@@ -175,7 +174,6 @@ function TradeContent() {
             <div className="card-base">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl">{selected.emoji}</span>
                   <div>
                     <h2 className="font-semibold">{selected.name}</h2>
                     <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
