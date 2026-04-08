@@ -138,34 +138,33 @@ function TradeContent() {
       {/* Header */}
       <div className="border-b px-4 py-3" style={{ borderColor: "var(--border-subtle)" }}>
         <div className="mx-auto max-w-[1400px] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div>
-              <h1 className="text-lg font-semibold">模拟交易大厅</h1>
-              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-                10万虚拟资金 &middot; 实时行情模拟 &middot; 零风险练手
-                {trade.totalXp > 0 && <> &middot; {trade.totalXp} XP</>}
+          <div>
+            <h1 className="text-lg font-semibold">模拟交易</h1>
+            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+              虚拟资金，真实体验
+            </p>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="text-right">
+              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>总资产</p>
+              <p className="text-lg font-bold tabular-nums">&yen;{totalAssets.toLocaleString()}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>总盈亏</p>
+              <p className={`text-lg font-bold tabular-nums ${totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
+                {totalPnL >= 0 ? "+" : ""}{totalPnL.toLocaleString()}
+                <span className="text-xs ml-1 font-medium">({pnlPercent}%)</span>
               </p>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>总资产</p>
-            <p className="text-lg font-bold tabular-nums">&yen;{totalAssets.toLocaleString()}</p>
-            <p className={`text-xs font-medium ${totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
-              {totalPnL >= 0 ? "+" : ""}{totalPnL.toLocaleString()} ({pnlPercent}%)
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Ticker Bar */}
-      <MarketTicker ticks={ticks} selected={selected} onSelect={setSelected} />
-
-      {/* Main Grid */}
+      {/* Main Grid: Left(Chart+Trade) + Right(StockList+Portfolio) */}
       <div className="mx-auto max-w-[1400px] px-4 py-4">
-        <div className="grid gap-4 lg:grid-cols-3">
-          {/* Left: Mission Guide + Chart + Trade */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Mission Guide Panel */}
+        <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+          {/* Left: Mission + Chart + Trade */}
+          <div className="space-y-4">
             {mission && (
               <MissionGuidePanel mission={mission} done={missionDone || trade.isMissionCompleted(mission.id)} />
             )}
@@ -173,13 +172,11 @@ function TradeContent() {
             {/* Chart + Stock Traits */}
             <div className="card-base">
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div>
-                    <h2 className="font-semibold">{selected.name}</h2>
-                    <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-                      {selected.symbol} &middot; {selected.category}
-                    </span>
-                  </div>
+                <div>
+                  <h2 className="font-semibold">{selected.name}</h2>
+                  <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                    {selected.symbol} &middot; {selected.category}
+                  </span>
                 </div>
                 {ticks[selected.symbol] && (
                   <div className="text-right">
@@ -198,7 +195,7 @@ function TradeContent() {
                 color={ticks[selected.symbol]?.changePercent >= 0 ? "#22c55e" : "#ef4444"}
                 height={200}
               />
-              {/* Stock Traits - 投资特征标注 */}
+              {/* Stock Traits */}
               <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border-subtle)" }}>
                 <div className="flex flex-wrap gap-2 items-center">
                   {selected.traits.style && (
@@ -237,8 +234,14 @@ function TradeContent() {
             <TradePanel stock={selected} tick={ticks[selected.symbol]} mission={mission} missionDone={missionDone} />
           </div>
 
-          {/* Right: Portfolio */}
-          <div>
+          {/* Right Sidebar: Stock List + Portfolio */}
+          <div className="space-y-4">
+            {/* Stock List */}
+            <div className="card-base">
+              <h3 className="text-sm font-semibold mb-3">自选行情</h3>
+              <MarketTicker ticks={ticks} selected={selected} onSelect={setSelected} />
+            </div>
+
             <PortfolioPanel ticks={ticks} />
           </div>
         </div>
