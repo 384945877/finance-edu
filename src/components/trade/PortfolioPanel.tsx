@@ -4,6 +4,7 @@ import Link from "next/link";
 import { STOCKS, type Tick } from "@/lib/market-engine";
 import { useTrade } from "@/lib/trade-store";
 import { TRADE_MISSIONS } from "@/lib/trade-missions";
+import { useHydrated } from "@/lib/useHydrated";
 
 interface Props {
   ticks: Record<string, Tick>;
@@ -11,11 +12,15 @@ interface Props {
 
 export default function PortfolioPanel({ ticks }: Props) {
   const trade = useTrade();
+  const hydrated = useHydrated();
 
   const prices: Record<string, number> = {};
   for (const s of STOCKS) {
     prices[s.symbol] = ticks[s.symbol]?.price || 0;
   }
+
+  const positions = hydrated ? trade.positions : [];
+  const completedMissions = hydrated ? trade.completedMissions : [];
 
   return (
     <div className="space-y-4">
@@ -24,11 +29,11 @@ export default function PortfolioPanel({ ticks }: Props) {
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xs font-semibold">持仓</h3>
           <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>
-            {trade.positions.length} 只
+            {positions.length} 只
           </span>
         </div>
 
-        {trade.positions.length === 0 ? (
+        {positions.length === 0 ? (
           <div className="text-center py-8 rounded-xl" style={{ background: "var(--color-gray-50)" }}>
             <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
               暂无持仓
@@ -39,7 +44,7 @@ export default function PortfolioPanel({ ticks }: Props) {
           </div>
         ) : (
           <div className="space-y-1.5">
-            {trade.positions.map((pos) => {
+            {positions.map((pos) => {
               const stock = STOCKS.find((s) => s.symbol === pos.symbol);
               const currentPrice = prices[pos.symbol] || pos.avgCost;
               const marketValue = Math.round(currentPrice * pos.quantity * 100) / 100;
@@ -73,17 +78,17 @@ export default function PortfolioPanel({ ticks }: Props) {
       </div>
 
       {/* 任务进度 */}
-      {trade.completedMissions.length > 0 && (
+      {completedMissions.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <h3 className="text-xs font-semibold">实战任务</h3>
             <span className="text-[10px] font-medium" style={{ color: "#f97316" }}>
-              {trade.completedMissions.length}/{TRADE_MISSIONS.length} · {trade.totalXp} XP
+              {completedMissions.length}/{TRADE_MISSIONS.length} · {trade.totalXp} XP
             </span>
           </div>
           <div className="h-1 rounded-full overflow-hidden" style={{ background: "var(--border-subtle)" }}>
             <div className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.round((trade.completedMissions.length / TRADE_MISSIONS.length) * 100)}%`, background: "#f97316" }} />
+              style={{ width: `${Math.round((completedMissions.length / TRADE_MISSIONS.length) * 100)}%`, background: "#f97316" }} />
           </div>
         </div>
       )}

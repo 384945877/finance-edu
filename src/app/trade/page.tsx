@@ -12,6 +12,7 @@ import MiniChart from "@/components/trade/MiniChart";
 import MissionGuidePanel from "@/components/trade/MissionGuidePanel";
 import StrategySignalBar from "@/components/trade/StrategySignalBar";
 import { type StrategyId } from "@/lib/quant-strategies";
+import { useHydrated } from "@/lib/useHydrated";
 
 export default function TradePage() {
   return (
@@ -36,6 +37,7 @@ function TradeContent() {
   tickRef.current = ticks;
 
   const trade = useTrade();
+  const hydrated = useHydrated();
 
   // 如果任务指定了标的，自动选中
   useEffect(() => {
@@ -132,8 +134,8 @@ function TradeContent() {
     prices[s.symbol] = ticks[s.symbol]?.price || 0;
   }
 
-  const totalAssets = trade.getTotalAssets(prices);
-  const totalPnL = trade.getTotalPnL(prices);
+  const totalAssets = hydrated ? trade.getTotalAssets(prices) : 100000;
+  const totalPnL = hydrated ? trade.getTotalPnL(prices) : 0;
   const pnlPercent = trade.initialCash === 0 ? 0 : Math.round((totalPnL / trade.initialCash) * 10000) / 100;
 
   return (

@@ -6,6 +6,7 @@ import { getNextModule, getPrevModule, getPartById, getTotalModules, getCourse, 
 import { getMissionBySlug } from "@/lib/trade-missions";
 import TradeMissionBanner from "@/components/trade/TradeMissionBanner";
 import AiTutor from "@/components/AiTutor";
+import { useHydrated } from "@/lib/useHydrated";
 
 interface ModuleShellProps {
   courseId: string;
@@ -15,12 +16,13 @@ interface ModuleShellProps {
 
 export default function ModuleShell({ courseId, module, children }: ModuleShellProps) {
   const { completeModule, isCompleted, getProgress } = useProgress();
+  const hydrated = useHydrated();
   const next = getNextModule(courseId, module.id);
   const prev = getPrevModule(courseId, module.id);
   const part = getPartById(courseId, module.part);
   const course = getCourse(courseId);
-  const completed = isCompleted(courseId, module.id);
-  const progress = getProgress(courseId);
+  const completed = hydrated ? isCompleted(courseId, module.id) : false;
+  const progress = hydrated ? getProgress(courseId) : 0;
   const total = getTotalModules(courseId);
   const color = course?.color || "var(--color-brand)";
 

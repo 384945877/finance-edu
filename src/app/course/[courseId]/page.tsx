@@ -6,6 +6,7 @@ import { getCourse, getTotalModules } from "@/lib/course-data";
 import { useProgress } from "@/lib/progress-store";
 import { getMissionBySlug } from "@/lib/trade-missions";
 import { useTrade } from "@/lib/trade-store";
+import { useHydrated } from "@/lib/useHydrated";
 import { notFound } from "next/navigation";
 
 export default function CourseMapPage({ params }: { params: Promise<{ courseId: string }> }) {
@@ -15,7 +16,8 @@ export default function CourseMapPage({ params }: { params: Promise<{ courseId: 
 
   const { isCompleted, isUnlocked, getProgress } = useProgress();
   const { isMissionCompleted } = useTrade();
-  const progress = getProgress(courseId);
+  const hydrated = useHydrated();
+  const progress = hydrated ? getProgress(courseId) : 0;
   const total = getTotalModules(courseId);
   const firstSlug = course.parts[0]?.modules[0]?.slug;
 
@@ -74,10 +76,10 @@ export default function CourseMapPage({ params }: { params: Promise<{ courseId: 
               </h2>
               <div className="grid gap-3">
                 {part.modules.map((m) => {
-                  const done = isCompleted(courseId, m.id);
-                  const unlocked = isUnlocked(courseId, m.id);
+                  const done = hydrated ? isCompleted(courseId, m.id) : false;
+                  const unlocked = hydrated ? isUnlocked(courseId, m.id) : m.id === 1;
                   const mission = courseId === "intermediate" ? getMissionBySlug(m.slug) : undefined;
-                  const mDone = mission ? isMissionCompleted(mission.id) : false;
+                  const mDone = hydrated && mission ? isMissionCompleted(mission.id) : false;
                   return (
                     <Link key={m.id}
                       href={unlocked ? `/course/${courseId}/${m.slug}` : "#"}

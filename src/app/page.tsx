@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { courses, getTotalModules } from "@/lib/course-data";
 import { useProgress } from "@/lib/progress-store";
+import { useHydrated } from "@/lib/useHydrated";
 
 export default function Home() {
   const { getProgress } = useProgress();
+  const hydrated = useHydrated();
 
   return (
     <>
@@ -56,7 +58,7 @@ export default function Home() {
       <section className="section-padding">
         <div className="mx-auto max-w-[900px] grid gap-6 md:grid-cols-3">
           {courses.map((course) => {
-            const progress = getProgress(course.id);
+            const progress = hydrated ? getProgress(course.id) : 0;
             const total = getTotalModules(course.id);
             return (
               <Link key={course.id} href={`/course/${course.id}`}

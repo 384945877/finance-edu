@@ -6,6 +6,7 @@ import { useProgress } from "@/lib/progress-store";
 import ModuleShell from "@/components/ModuleShell";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { useHydrated } from "@/lib/useHydrated";
 
 /* ===== Beginner modules (Lv.1) ===== */
 import Module1 from "@/modules/what-is-money";
@@ -127,9 +128,10 @@ export default function CourseModulePage({
   if (!mod) return notFound();
 
   const { isUnlocked } = useProgress();
+  const hydrated = useHydrated();
 
-  /* Not unlocked → friendly message */
-  if (!isUnlocked(courseId, mod.id)) {
+  /* Not unlocked → friendly message (only after hydration) */
+  if (hydrated && !isUnlocked(courseId, mod.id)) {
     return (
       <div className="mx-auto max-w-xl py-24 text-center px-6">
         <div className="text-5xl mb-6">&#x1F512;</div>

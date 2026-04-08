@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { STOCKS } from "@/lib/market-engine";
 import { useTrade } from "@/lib/trade-store";
+import { useHydrated } from "@/lib/useHydrated";
 
 export default function TradeHistoryPage() {
   const trade = useTrade();
-  const records = [...trade.history].reverse(); // 最新在前
+  const hydrated = useHydrated();
+  const records = hydrated ? [...trade.history].reverse() : [];
 
   return (
     <div className="min-h-screen" style={{ background: "var(--color-bg)" }}>
