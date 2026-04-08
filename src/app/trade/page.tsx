@@ -145,6 +145,10 @@ function TradeContent() {
             </p>
           </div>
           <div className="flex items-center gap-5">
+            <Link href="/trade/strategies" className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+              style={{ background: "var(--color-gray-100)", color: "var(--color-text-secondary)" }}>
+              量化策略
+            </Link>
             <div className="text-right">
               <p className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>总资产</p>
               <p className="text-sm font-bold tabular-nums">&yen;{totalAssets.toLocaleString()}</p>

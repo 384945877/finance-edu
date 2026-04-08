@@ -36,6 +36,10 @@ export default function Navbar() {
             style={{ background: "var(--color-brand)", color: "#0d0d0d" }}>
             模拟交易
           </Link>
+          <Link href="/trade/strategies" className="text-xs font-medium px-2 py-1 rounded-lg transition-colors hover:bg-[var(--border-subtle)]"
+            style={{ color: "var(--color-text-secondary)" }}>
+            量化策略
+          </Link>
         </div>
       </nav>
     </header>
