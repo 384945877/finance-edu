@@ -7,7 +7,7 @@ export default function CreditScore() {
     <>
       <h2>征信报告：你的"财务身份证"</h2>
       <p>
-        你可能听过<strong>\u201c征信花了\u201d\u201c上了黑名单\u201d</strong>这些说法。征信到底是什么？简单说：它是<strong>银行判断你靠不靠谱的依据</strong>。
+        你可能听过<strong>{"\u201c"}征信花了{"\u201d"}{"\u201c"}上了黑名单{"\u201d"}</strong>这些说法。征信到底是什么？简单说：它是<strong>银行判断你靠不靠谱的依据</strong>。
       </p>
 
       <div className="knowledge-card">

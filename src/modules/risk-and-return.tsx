@@ -63,7 +63,7 @@ export default function RiskAndReturn() {
     <>
       <h2>天下没有免费的午餐</h2>
       <p>
-        如果有人告诉你<strong>\u201c保本年化15%\u201d</strong>——要么他在骗你，要么他自己也被骗了。金融世界有一条铁律：<strong>风险和收益是一对双胞胎</strong>。
+        如果有人告诉你<strong>{"\u201c"}保本年化15%{"\u201d"}</strong>——要么他在骗你，要么他自己也被骗了。金融世界有一条铁律：<strong>风险和收益是一对双胞胎</strong>。
       </p>
 
       <div className="knowledge-card">

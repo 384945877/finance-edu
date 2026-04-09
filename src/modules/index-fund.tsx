@@ -7,7 +7,7 @@ export default function IndexFund() {
     <>
       <h2>巴菲特给普通人的唯一建议</h2>
       <p>
-        巴菲特在遗嘱中给妻子的投资建议只有一句话：<strong>\u201c把90%的钱放到低费率的标普500指数基金里\u201d</strong>。为什么股神推荐指数基金？
+        巴菲特在遗嘱中给妻子的投资建议只有一句话：<strong>{"\u201c"}把90%的钱放到低费率的标普500指数基金里{"\u201d"}</strong>。为什么股神推荐指数基金？
       </p>
 
       <div className="knowledge-card">

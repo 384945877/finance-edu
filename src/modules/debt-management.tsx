@@ -89,7 +89,7 @@ export default function DebtManagement() {
 
       <h2>最低还款的陷阱</h2>
       <p>
-        信用卡账单上写着<strong>\u201c最低还款额¥500\u201d</strong>，看起来很贴心。但陷阱在于：
+        信用卡账单上写着<strong>{"\u201c"}最低还款额¥500{"\u201d"}</strong>，看起来很贴心。但陷阱在于：
       </p>
       <ul>
         <li>剩余欠款按<strong>全额</strong>计利息（不是剩余部分）</li>
