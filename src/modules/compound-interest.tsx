@@ -1,73 +1,103 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Quiz from "@/components/Quiz";
+import AnimatedNumber from "@/components/motion/AnimatedNumber";
+import MiniLineChart from "@/components/motion/MiniLineChart";
+import FlipCard from "@/components/motion/FlipCard";
+import { useSound } from "@/lib/use-sound";
 
-/* 互动组件：复利雪球模拟器 */
+/* 互动组件：复利雪球模拟器（多模态升级版） */
 function CompoundSnowball() {
   const [principal, setPrincipal] = useState(10000);
   const [rate, setRate] = useState(8);
   const [years, setYears] = useState(20);
+  const { play } = useSound();
 
   const compound = Math.round(principal * Math.pow(1 + rate / 100, years));
   const simple = Math.round(principal * (1 + rate / 100 * years));
   const diff = compound - simple;
 
-  const milestones = [5, 10, 20, 30].map(y => ({
-    year: y,
-    value: Math.round(principal * Math.pow(1 + rate / 100, y)),
-  }));
+  /* 折线图数据 */
+  const chartData = useMemo(() => {
+    const pts: { label: string; value: number }[] = [];
+    for (let y = 0; y <= years; y += Math.max(1, Math.floor(years / 20))) {
+      pts.push({ label: `${y}年`, value: Math.round(principal * Math.pow(1 + rate / 100, y)) });
+    }
+    if (pts[pts.length - 1]?.label !== `${years}年`) {
+      pts.push({ label: `${years}年`, value: compound });
+    }
+    return pts;
+  }, [principal, rate, years, compound]);
+
+  /* 单利折线数据（对比用） */
+  const simpleData = useMemo(() => {
+    const pts: { label: string; value: number }[] = [];
+    for (let y = 0; y <= years; y += Math.max(1, Math.floor(years / 20))) {
+      pts.push({ label: `${y}年`, value: Math.round(principal * (1 + rate / 100 * y)) });
+    }
+    if (pts[pts.length - 1]?.label !== `${years}年`) {
+      pts.push({ label: `${years}年`, value: simple });
+    }
+    return pts;
+  }, [principal, rate, years, simple]);
+
+  const handleSliderChange = () => play("click");
 
   return (
     <div className="card-featured">
-      <h3 style={{ marginTop: 0 }}>🔄 复利雪球模拟器</h3>
+      <h3 style={{ marginTop: 0 }}>复利雪球模拟器</h3>
       <div className="space-y-3">
         <div>
           <label className="text-sm font-medium">初始本金：¥{principal.toLocaleString()}</label>
           <input type="range" min={1000} max={100000} step={1000} value={principal}
-            onChange={e => setPrincipal(+e.target.value)} className="w-full accent-[var(--color-brand)]" />
+            onChange={e => { setPrincipal(+e.target.value); handleSliderChange(); }}
+            className="w-full accent-[var(--color-brand)]" />
         </div>
         <div>
           <label className="text-sm font-medium">年化收益率：{rate}%</label>
           <input type="range" min={1} max={15} step={0.5} value={rate}
-            onChange={e => setRate(+e.target.value)} className="w-full accent-[var(--color-brand)]" />
+            onChange={e => { setRate(+e.target.value); handleSliderChange(); }}
+            className="w-full accent-[var(--color-brand)]" />
         </div>
         <div>
           <label className="text-sm font-medium">投资年数：{years}年</label>
           <input type="range" min={1} max={40} step={1} value={years}
-            onChange={e => setYears(+e.target.value)} className="w-full accent-[var(--color-brand)]" />
+            onChange={e => { setYears(+e.target.value); handleSliderChange(); }}
+            className="w-full accent-[var(--color-brand)]" />
         </div>
       </div>
 
+      {/* 动画数字卡片 */}
       <div className="grid grid-cols-3 gap-3 mt-4 text-center">
         <div className="card-base p-3">
           <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>复利终值</div>
-          <div className="text-lg font-bold" style={{ color: "var(--color-brand)" }}>¥{compound.toLocaleString()}</div>
+          <AnimatedNumber value={compound} prefix="¥" className="text-lg font-bold block"
+            style={{ color: "var(--color-brand)" }} />
         </div>
         <div className="card-base p-3">
           <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>单利终值</div>
-          <div className="text-lg font-bold">¥{simple.toLocaleString()}</div>
+          <AnimatedNumber value={simple} prefix="¥" className="text-lg font-bold block" />
         </div>
         <div className="card-base p-3">
           <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>复利多赚</div>
-          <div className="text-lg font-bold" style={{ color: "var(--color-brand-deep)" }}>¥{diff.toLocaleString()}</div>
+          <AnimatedNumber value={diff} prefix="¥" className="text-lg font-bold block"
+            style={{ color: "var(--color-brand-deep)" }} />
         </div>
       </div>
 
-      <div className="flex items-end gap-1 mt-4 h-24">
-        {milestones.map(m => {
-          const maxVal = milestones[milestones.length - 1].value;
-          const h = Math.max(10, (m.value / maxVal) * 100);
-          return (
-            <div key={m.year} className="flex-1 flex flex-col items-center gap-1">
-              <span className="text-xs font-bold" style={{ color: "var(--color-brand)" }}>
-                ¥{(m.value / 10000).toFixed(1)}万
-              </span>
-              <div className="w-full rounded-t" style={{ height: `${h}%`, background: "var(--color-brand)", opacity: 0.7 + m.year / 100 }} />
-              <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>{m.year}年</span>
-            </div>
-          );
-        })}
+      {/* SVG 增长曲线对比 */}
+      <div className="mt-5 rounded-xl p-3" style={{ background: "var(--color-gray-50)", border: "1px solid var(--border-subtle)" }}>
+        <div className="flex items-center gap-4 mb-2 text-[11px] font-medium" style={{ color: "var(--color-text-muted)" }}>
+          <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 rounded" style={{ background: "#22c55e" }} /> 复利</span>
+          <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 rounded" style={{ background: "#94a3b8" }} /> 单利</span>
+        </div>
+        <div className="relative">
+          <MiniLineChart data={simpleData} width={340} height={100} color="#94a3b8" showDots={false} animate={false} />
+          <div className="absolute inset-0">
+            <MiniLineChart data={chartData} width={340} height={100} color="#22c55e" showDots showLabels />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -76,19 +106,25 @@ function CompoundSnowball() {
 export default function CompoundInterest() {
   return (
     <>
-      <h2>爱因斯坦说的"第八大奇迹"</h2>
+      <h2>爱因斯坦说的第八大奇迹</h2>
       <p>
         复利的公式很简单：<strong>利息会产生利息</strong>。第一年赚的利息，第二年也会帮你赚钱。这就像滚雪球——球越大，滚得越快。
       </p>
 
-      <div className="knowledge-card">
-        <div className="card-icon">🔄</div>
-        <h3>单利 vs 复利</h3>
+      {/* 翻转卡片：单利 vs 复利 */}
+      <div className="grid grid-cols-2 gap-4 my-6">
+        <FlipCard
+          height={160}
+          front={<><div className="text-2xl mb-2">📊</div><p className="text-sm font-bold">单利</p><p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>点击看真相</p></>}
+          back={<><p className="text-sm font-bold" style={{ color: "#ef4444" }}>只有本金赚钱</p><p className="text-xs mt-2">1万 × 10% × 10年<br />= 每年赚1000<br />最终 = ¥20,000</p></>}
+        />
+        <FlipCard
+          height={160}
+          front={<><div className="text-2xl mb-2">🔄</div><p className="text-sm font-bold">复利</p><p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>点击看魔法</p></>}
+          back={<><p className="text-sm font-bold" style={{ color: "#22c55e" }}>利息也在赚钱</p><p className="text-xs mt-2">1万 × (1.1)^10<br />= 利滚利10年<br />最终 = ¥25,937</p></>}
+        />
       </div>
-      <ul>
-        <li><strong>单利</strong>：只有本金生利息。1万块年利率10%，每年都只赚1000</li>
-        <li><strong>复利</strong>：利息也生利息。1万块年利率10%，第一年赚1000，第二年赚1100（因为本金变成11000了）</li>
-      </ul>
+
       <p>短期看差不多，但<strong>时间越长，差距越惊人</strong>。拉到30年，复利的结果可以是单利的好几倍。</p>
 
       <CompoundSnowball />

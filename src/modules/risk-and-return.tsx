@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Quiz from "@/components/Quiz";
+import FlipCard from "@/components/motion/FlipCard";
+import StorySimulator, { type SimStep, type SimStat } from "@/components/StorySimulator";
 
 /* 互动：风险收益天平 */
 function RiskReturnScale() {
@@ -58,6 +60,52 @@ function RiskReturnScale() {
   );
 }
 
+/* ---- 风险投资模拟器数据 ---- */
+const riskStats: SimStat[] = [
+  { label: "总资产", key: "total", prefix: "¥", color: "var(--color-brand)" },
+  { label: "风险等级", key: "risk", suffix: "/10" },
+  { label: "年化收益", key: "return", suffix: "%" },
+];
+
+const riskSteps: SimStep[] = [
+  {
+    id: "start", title: "第一笔投资", image: "💰",
+    narrative: "你攒了50000块，打算开始投资。一个朋友推荐你一只「私募基金」，承诺年化15%保本。另一个朋友说不如买指数基金。你怎么选？",
+    choices: [
+      { text: "私募基金，15%保本听着不错", result: "3个月后这个「私募」跑路了，你的5万血本无归。保本+高收益 = 骗局最常见的包装。", effects: { total: -50000, risk: 10 }, isGood: false },
+      { text: "指数基金，虽然慢但靠谱", result: "半年后赚了4%，不多但很稳。沪深300指数基金是大多数人最好的起步选择。", effects: { total: 2000, return: 8, risk: -2 }, isGood: true },
+      { text: "先拿1万试试私募，4万买指数", result: "私募的1万没了，但指数的4万涨了4%赚1600。净亏8400。试水也有代价——骗局不分金额大小。", effects: { total: -8400, risk: 3 }, isGood: false },
+    ],
+  },
+  {
+    id: "crash", title: "市场大跌 -20%", image: "📉",
+    narrative: "大盘突然暴跌20%，你的基金也跌了18%。朋友圈都在讨论要不要割肉。你的基金从52000跌到了42600。",
+    choices: [
+      { text: "赶紧卖！再跌就全没了", result: "你在最低点割肉了。统计显示恐慌抛售的人，90%在之后1年后悔，因为市场通常会反弹。", effects: { total: -9400, risk: -3 }, isGood: false },
+      { text: "不动，长期持有穿越周期", result: "3个月后市场反弹了25%。你的42600变成了53250。坚持到底的人吃到了反弹红利。", effects: { total: 10650, return: 4 }, isGood: true },
+      { text: "趁低价再买入一些", result: "越跌越买是巴菲特的策略。你在低点加仓1万，反弹后这1万涨了25%赚2500。", effects: { total: 13150, return: 6, risk: 2 }, isGood: true },
+    ],
+  },
+  {
+    id: "hype", title: "朋友推荐热门股", image: "🔥",
+    narrative: "同事炫耀买了某AI概念股，一个月涨了40%。他说现在上车还来得及。你的基金稳稳的，但看着别人暴赚你心痒。",
+    choices: [
+      { text: "全仓冲进AI概念股", result: "你进去的第二周开始回调，一个月跌了30%。追涨杀跌是散户亏钱的首要原因。", effects: { total: -15000, risk: 5 }, isGood: false },
+      { text: "拿10%的钱买着玩，大头不动", result: "用少量仓位满足好奇心，主力仓位保持纪律。这就是'卫星仓位'策略。", effects: { total: -500, risk: 1, return: -1 }, isGood: true },
+      { text: "不跟风，继续定投指数", result: "半年后AI概念股跌回原价，你的指数基金又涨了6%。慢就是快。", effects: { total: 3000, return: 2 }, isGood: true },
+    ],
+  },
+  {
+    id: "diversify", title: "资产配置决策", image: "🎯",
+    narrative: "一年过去了，你学了不少投资知识。现在你想重新规划投资组合。账户里有6万多，该怎么分配？",
+    choices: [
+      { text: "全部买收益最高的——股票基金", result: "下一次市场波动你可能损失30%+。单一资产 = 把鸡蛋放一个篮子。", effects: { total: -5000, risk: 5 }, isGood: false },
+      { text: "60%指数基金 + 30%债券 + 10%货币", result: "经典的6/3/1配置。股票提供增长，债券平衡波动，货币保障流动性。这是最稳的组合之一。", effects: { total: 3000, risk: -3, return: 3 }, isGood: true },
+      { text: "50%存银行，50%买股票", result: "两极分化的配置。银行部分几乎不赚钱，股票部分波动太大。不如找个中间地带。", effects: { total: 1000, risk: 1 }, isGood: false },
+    ],
+  },
+];
+
 export default function RiskAndReturn() {
   return (
     <>
@@ -66,28 +114,36 @@ export default function RiskAndReturn() {
         如果有人告诉你<strong>{"\u201c"}保本年化15%{"\u201d"}</strong>——要么他在骗你，要么他自己也被骗了。金融世界有一条铁律：<strong>风险和收益是一对双胞胎</strong>。
       </p>
 
-      <div className="knowledge-card">
-        <div className="card-icon">&#x2696;&#xFE0F;</div>
-        <h3>风险与收益的永恒关系</h3>
+      {/* 翻转卡片：三种风险 */}
+      <div className="grid grid-cols-3 gap-3 my-6">
+        <FlipCard height={140}
+          front={<><div className="text-xl mb-1">🌊</div><p className="text-xs font-bold">市场风险</p></>}
+          back={<p className="text-xs leading-relaxed">整个市场下跌<br />所有人都亏<br />不可避免<br />只能用时间化解</p>}
+        />
+        <FlipCard height={140}
+          front={<><div className="text-xl mb-1">💣</div><p className="text-xs font-bold">个别风险</p></>}
+          back={<p className="text-xs leading-relaxed">某公司/产品暴雷<br />可以通过分散投资降低<br />不要把鸡蛋放一个篮子</p>}
+        />
+        <FlipCard height={140}
+          front={<><div className="text-xl mb-1">📈</div><p className="text-xs font-bold">通胀风险</p></>}
+          back={<p className="text-xs leading-relaxed">收益跑不赢物价<br />存银行可能越存越穷<br />至少要跑赢3%</p>}
+        />
       </div>
-      <ul>
-        <li><strong>低风险低收益</strong>：银行存款、国债（2-3%）——稳，但跑不了多远</li>
-        <li><strong>中等风险中等收益</strong>：债券基金、指数基金（4-10%）——波动能忍受，长期有回报</li>
-        <li><strong>高风险高收益</strong>：个股、加密货币（可能翻倍也可能归零）——刺激，但你受得了吗？</li>
-      </ul>
 
       <RiskReturnScale />
 
-      <h2>你需要知道的三种风险</h2>
-      <ul>
-        <li><strong>市场风险</strong> — 整个市场下跌，所有人都亏。比如2008金融危机、2020疫情初期</li>
-        <li><strong>个别风险</strong> — 某家公司/某个产品出问题。比如某P2P暴雷</li>
-        <li><strong>通胀风险</strong> — 你的投资收益跑不赢物价上涨</li>
-      </ul>
+      <h2 style={{ marginTop: "2rem" }}>风险决策模拟器</h2>
+      <p>你有5万块要投资，4个关键时刻的选择将决定你一年后的资产和投资段位。</p>
 
-      <blockquote>
-        投资不是消除风险，而是选择你能承受的风险，换取对应的回报。
-      </blockquote>
+      <StorySimulator
+        title="风险决策模拟器"
+        description="4步决策，看你是韭菜还是老手"
+        stats={riskStats}
+        initialValues={{ total: 50000, risk: 5, return: 0 }}
+        steps={riskSteps}
+        chartKey="total"
+        endingText="投资不是消除风险，而是选择你能承受的风险，换取对应的回报。记住：保本+高收益=骗局，分散配置，长期持有。"
+      />
 
       <Quiz
         question="有人推荐你一个'保本年化收益12%'的理财产品，你应该？"
